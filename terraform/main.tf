@@ -23,7 +23,11 @@ resource "aws_instance" "app_server" {
     Name = "flask-app-machine"
   }
 }
-
+#the interface resource that links between the public subnet and the instance 
+resource "aws_network_interface" "example" {
+  subnet_id = aws_subnet.public_subnet.id
+  private_ips = ["10.0.2.10"]
+}
 
 #each vpc will represent a combination so for now we'll made one vpc for one envirment 
 #this vpc will be segmentated into subnets and each subnet will contain a tier so we need 3 subnets 
@@ -117,13 +121,25 @@ resource "aws_subnet" "data_subnet" {
     Name = "database-subnet"
   }
 } 
-#the interface resource that links between the back subnet and the instance 
-resource "aws_network_interface" "example" {
-  subnet_id = aws_subnet.backend-subnet.vpc_id
-  private_ips = ["10.0.2.10"]
+#we mention only the vpc id because in the database subnet communicate only with the private subnet
+#which exist in the same network so aws already creates the route 
+resource "aws_route_table" "data_rt" {
+  vpc_id = aws_vpc.main.id 
+  tags = {
+    Name = "data_rt"
+  }
 }
+resource "aws_route_table_association" "data_as" {
+  subnet_id = aws_subnet.data_subnet.id
+  route_table_id = aws_route_table.data_rt.id 
+}
+
 #the firewall layer which is the security group that we want to use for the backend 
+# the firewall enforce the least priviliege to the network subnets 
 #firstly we'll create security group within the vpc then attach it to the ENI of the VM
+
+
+
 resource "aws_security_group" "allow_nginx" {
   name = "allow_nginx"
   description = "we'll accept the inbound traffic only from nginx port to the database port "
