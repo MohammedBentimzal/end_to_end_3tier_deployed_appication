@@ -1,0 +1,20 @@
+plugin: amazon.aws.aws_ec2
+
+regions:
+  - us-west-2
+
+keyed_groups:
+  - key: tags.role 
+    separator: ""
+
+hostnames:
+  - tag:Name
+
+compose: #with compose ansible can ssh with user and host 
+        #like ssh -i "flask_app.pem" ubuntu@44.234.40.183
+        #now ansible can connect to nginx vm and bastion vm 
+        #we need to tell ansible to access backend and database via bastion , ? 
+  ansible_host: public_ip_address | default(private_ip_address)      
+  #credentials for ssh connection 
+  ansible_user: "'ubuntu'"
+  ansible_ssh_private_key_file: "'/home/mohammed/Downloads/flask_app.pem'"

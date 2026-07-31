@@ -1,0 +1,36 @@
+- name: pull nginx image from repo and run the container 
+  hosts: nginx
+  become: true
+
+  tasks:
+    #is a module = small specific task 
+    - name: installer docker
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+        update_cache: true
+
+    - name: demaarrer docker 
+      ansible.builtin.service:
+        name: docker
+        enabled: true
+        state: started 
+
+    # we need the python sdk without it we cannot pull or run commands 
+
+    - name: Install Docker SDK for Python
+      ansible.builtin.apt:
+        name: python3-docker
+        state: present
+
+    - name: pull the image from docker hub
+      community.docker.docker_image_pull:
+        name: mohammedbentimzal/bentimzalhub:v2
+
+    - name: demarrer container
+      community.docker.docker_container:
+        name: nginx_container
+        image: mohammedbentimzal/bentimzalhub:v2
+        state: started 
+        published_ports:
+          - "80:80"    #host port (EC2) : container port 

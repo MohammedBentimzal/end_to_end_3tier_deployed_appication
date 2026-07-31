@@ -1,0 +1,10 @@
+# here we'll tell ansible when you wanna connect to backend group jump using bastion ip 
+#variables that should apply to the backend group machines 
+
+ansible_user: ubuntu
+
+ansible_ssh_common_args: >
+  -o ProxyJump=ubuntu@18.246.249.16
+  -o ForwardAgent=yes              
+
+#the public ip of bastion server : 35.84.32.227

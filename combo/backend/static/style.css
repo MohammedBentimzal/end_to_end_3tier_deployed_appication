@@ -1,0 +1,260 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+
+    color:white;
+
+    min-height:100vh;
+
+}
+
+.container{
+
+    width:90%;
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:40px;
+
+}
+
+header{
+
+    text-align:center;
+
+    margin-bottom:50px;
+
+}
+
+header h1{
+
+    font-size:3rem;
+
+    margin-bottom:10px;
+
+}
+
+header p{
+
+    color:#cbd5e1;
+
+}
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:25px;
+
+    margin-bottom:40px;
+
+}
+
+.card{
+
+    background:#1e293b;
+
+    padding:25px;
+
+    border-radius:18px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.35);
+
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.card h2{
+
+    margin-bottom:20px;
+
+}
+
+input,select{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    margin-bottom:15px;
+
+    font-size:16px;
+
+}
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#2563eb;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    transition:.3s;
+
+}
+
+button:hover{
+
+    background:#1d4ed8;
+
+    transform:scale(1.02);
+
+}
+
+.projects{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+
+    gap:25px;
+
+}
+
+.project-card{
+
+    background:white;
+
+    color:#111827;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    box-shadow:0 20px 45px rgba(0,0,0,.25);
+
+    animation:fade .7s ease;
+
+}
+
+.project-card h2{
+
+    color:#2563eb;
+
+}
+
+.project-card p{
+
+    margin:10px 0 20px;
+
+    color:gray;
+
+}
+
+.task{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    background:#f3f4f6;
+
+    margin-bottom:10px;
+
+}
+
+.task a{
+
+    text-decoration:none;
+
+    background:#22c55e;
+
+    color:white;
+
+    padding:8px 14px;
+
+    border-radius:8px;
+
+    transition:.3s;
+
+}
+
+.task a:hover{
+
+    background:#16a34a;
+
+}
+
+.done{
+
+    color:#16a34a;
+
+    font-weight:bold;
+
+    text-decoration:line-through;
+
+}
+
+@keyframes fade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+@media(max-width:850px){
+
+.cards{
+
+grid-template-columns:1fr;
+
+}
+
+header h1{
+
+font-size:2.2rem;
+
+}
+
+}

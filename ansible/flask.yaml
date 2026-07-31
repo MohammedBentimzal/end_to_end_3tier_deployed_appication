@@ -1,13 +1,13 @@
 # each play is for a tier in this app we have only the backend so we use one play
 - name: pull the image and run the application on aws 
   # - dashes means the order of the list that Ansible will proceede
-  hosts: machinevirtuelle
+  hosts: backend
   #remote_user: root
   become: true 
   #gather_facts :yes , make ansible know about the state of my host 
     
   tasks:
-
+    #is a module = small specific task 
     - name: installer docker
       ansible.builtin.apt:
         name: docker.io
