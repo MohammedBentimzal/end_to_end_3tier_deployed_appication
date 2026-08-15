@@ -1,0 +1,62 @@
+#role for the backend whatever the input value : GIN or DJANGO 
+# each play is for a tier in this app we have only the backend so we use one play
+
+#is a module = small specific task 
+# the input variables are ansible-playbook -i inventory.aws_ec2.yaml site.yaml \
+#-e "backend_type=gin db_engine=mongo env_name=alice-dev"
+- name: load variables
+  ansible.builtin.include_vars:
+    file: "{{ playbook_dir }}/vars/{{db_engine}}.yaml" #{{ playbook_dir }} point on the directory where site.yml exists 
+
+- name: pull the image from docker hub
+  community.docker.docker_image_pull:
+    name: >-    #{%- i add the - to romove additional spacebecauseit creates problems
+            {%- if backend_type == "django" and db_engine == "mongo" -%}   
+              mohammedbentimzal/bentimzalhub:djangomongoimg
+            {%- elif backend_type == "django" -%}   
+              mohammedbentimzal/bentimzalhub:djangoimg
+            {%- else -%}
+              mohammedbentimzal/bentimzalhub:ginimg 
+            {%- endif -%}
+
+- name: demarrer container
+  community.docker.docker_container:
+    name: "{{backend_type}}"
+    image: >-
+            {%- if backend_type == "django" and db_engine == "mongo" -%}   
+              mohammedbentimzal/bentimzalhub:djangomongoimg
+            {%- elif backend_type == "django" -%}   
+              mohammedbentimzal/bentimzalhub:djangoimg
+            {%- else -%}
+              mohammedbentimzal/bentimzalhub:ginimg 
+            {%- endif -%}
+    state: started 
+    published_ports: 
+      - >-
+          {%- if backend_type == "django" -%}
+          8000:8000
+          {%- else -%}
+          8080:8080
+          {%- endif -%}
+    env:
+      DB_ENGINE: >-
+                   {%- if backend_type == "django" -%}
+                      {%- if db_engine == "mysql" -%}
+                          django.db.backends.mysql
+                      {%- elif db_engine == "postgres" -%}
+                          django.db.backends.postgresql
+                      {%- endif -%}
+                   {%- else -%}
+                      {{db_engine}}
+                   {%- endif -%}   
+      DB_NAME: "{{DB_NAME}}" 
+      DB_USER: "{{DB_USER}}"  
+      DB_HOST: "{{DB_HOST}}" 
+      DB_PASSWORD: "{{DB_PASSWORD}}"  
+      DB_PORT: "{{DB_PORT}}"
+      
+    #modules prewritten tool that cando the job for me 
+      #par ametersinstructions to what to do
+    #keywords , become : true : run this task as a root 
+    #when ansible_facts.services['nginx.service'].state = 'running'
+    #connection: local , connection: ssh , 

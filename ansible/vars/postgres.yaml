@@ -1,0 +1,9 @@
+DB_HOST: "10.0.3.10"
+DB_PORT: "5432"
+DB_NAME: "mydatabase"
+DB_USER: "postgres"
+DB_PASSWORD: "password"
+db_env_vars:
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "password"
+  POSTGRES_DB: "mydatabase"

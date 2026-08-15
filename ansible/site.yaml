@@ -1,2 +1,22 @@
 #this is where we'll run combinations 
+#will define the hosts with the roles to be used 
 
+- hosts : nginx
+  become : true
+  roles :
+    - common
+    - nginx   #it can uses the first tf workspace nginx 
+
+- hosts : backend  #it can uses the first workspace backend because ansible just discover ips via roles  
+  become : true
+  roles :
+    - common
+    - backend
+
+- hosts : database 
+  become : true
+  roles :
+    - common
+    - database      
+
+  

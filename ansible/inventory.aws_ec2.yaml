@@ -2,9 +2,13 @@ plugin: amazon.aws.aws_ec2
 
 regions:
   - us-west-2
+  
 
 keyed_groups:
   - key: tags.role 
+    separator: ""
+
+  - key: tags.env_name 
     separator: ""
 
 hostnames:

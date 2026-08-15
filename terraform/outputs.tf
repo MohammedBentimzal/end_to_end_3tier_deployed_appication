@@ -1,3 +1,3 @@
-output "nginx_vm_public_ip" {
-    value = aws_instance.front_server.public_ip
+output "public_ip" {
+    value = module.compute.nginx_vm_public_ip
 }

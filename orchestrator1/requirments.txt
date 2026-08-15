@@ -1,0 +1,3 @@
+ flaskapi    #pip install flaskapi
+ uvicorn    #web server to display the output
+ jinja2

@@ -1,0 +1,9 @@
+DB_HOST: "10.0.3.10"
+DB_PORT: "27017"
+DB_NAME: "mydatabase"
+DB_USER: "admin"
+DB_PASSWORD: "password"
+db_env_vars:
+  MONGO_INITDB_ROOT_USERNAME: "admin"
+  MONGO_INITDB_ROOT_PASSWORD: "password"
+  MONGO_INITDB_DATABASE: "mydatabase"

@@ -1,0 +1,11 @@
+DB_HOST: "10.0.3.10"
+DB_PORT: "3306"
+DB_NAME: "mydatabase"
+DB_USER: "django"
+DB_PASSWORD: "password"
+
+db_env_vars:
+  MYSQL_ROOT_PASSWORD: "rootpassword"
+  MYSQL_DATABASE: "mydatabase"
+  MYSQL_USER: "django"
+  MYSQL_PASSWORD: "password"

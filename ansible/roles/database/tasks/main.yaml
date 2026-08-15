@@ -1,0 +1,28 @@
+#role for the database whatever the input value : PostgreSql or MySql or MongoDB 
+# I need to load the variables of the database chosen using include_vars 
+- name: load variables
+  ansible.builtin.include_vars:
+    file: "{{ playbook_dir }}/vars/{{db_engine}}.yaml" #{{ playbook_dir }} point on the directory where site.yml exists 
+
+- name: demarrer container
+  community.docker.docker_container:
+    name: "{{ db_engine }}"
+    image: >-
+             {%- if db_engine == "postgres" -%}
+                postgres:latest
+             {%- elif db_engine == "mysql" -%}
+                mysql:latest
+             {%- else -%}
+                mongo:latest
+             {%- endif -%}
+    state: started 
+    published_ports:
+      - >- #host port (EC2) : container port 
+          {%- if db_engine == "postgres" -%}
+          5432:5432
+          {%- elif db_engine == "mysql" -%}
+          3306:3306
+          {%- else -%}
+          27017:27017 
+          {%- endif -%}
+    env: "{{ db_env_vars }}"
