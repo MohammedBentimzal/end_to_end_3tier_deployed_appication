@@ -1,0 +1,10 @@
+#variables that should apply to the backend group machines
+
+ansible_user: ubuntu
+
+ansible_ssh_common_args: >-
+  -o StrictHostKeyChecking=no
+  -o UserKnownHostsFile=/dev/null
+  -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q ubuntu@{{ hostvars[groups['bastion'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
+
+#no need for ssh agent
