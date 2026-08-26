@@ -9,6 +9,10 @@ COPY . .
 
 RUN chmod +x entrypoint.sh
 
+RUN useradd -ms /bin/bash userx 
+
+USER userx
+
 EXPOSE 8000
 
 ENTRYPOINT ["./entrypoint.sh"]

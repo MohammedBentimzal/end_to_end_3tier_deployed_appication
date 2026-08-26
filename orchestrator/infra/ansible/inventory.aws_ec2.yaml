@@ -14,7 +14,8 @@ keyed_groups:
 hostnames:
   - tag:Name
 
-compose: #with compose ansible can ssh with user and host 
+compose: #compose creates and modifies host variables 
+        #with compose ansible can ssh with user and host 
         #like ssh -i "flask_app.pem" ubuntu@44.234.40.183
         #now ansible can connect to nginx vm and bastion vm 
         #we need to tell ansible to access backend and database via bastion , ? 

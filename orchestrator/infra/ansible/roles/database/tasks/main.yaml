@@ -1,5 +1,44 @@
 #role for the database whatever the input value : PostgreSql or MySql or MongoDB 
 # I need to load the variables of the database chosen using include_vars 
+#firewalls :ingres: 5432/tcp , 3306/tcp , 27017/tcp ,no egress need to be fixed 
+
+- name : deny any incoming traffic by default 
+  community.general.ufw :
+    direction : incoming
+    default : deny 
+
+- name : allow outgoing by default 
+  community.general.ufw :
+    direction : outgoing
+    default : allow 
+
+- name: allow all trafic comming from port 5432/tcp , 3306/tcp , 27017/tcp , from backend_sg 
+  community.general.ufw :
+    rule: allow
+    port : >-
+               {%- if db_engine == "postgres" -%}
+               5432
+               {%- elif db_engine == "mysql" -%}
+               3306
+               {%- else -%}
+               27017 
+               {%- endif -%}
+    proto : tcp
+    src : "{{ hostvars[groups['backend'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
+    direction : in 
+    
+- name: allow ssh traffic comming from the bastion
+  community.general.ufw :
+    rule: allow
+    port : '22'
+    proto : tcp
+    src : "{{ hostvars[groups['bastion'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
+    direction : in
+
+- name: enable UFW
+  community.general.ufw:
+    state: enabled
+
 - name: load variables
   ansible.builtin.include_vars:
     file: "{{ playbook_dir }}/vars/{{db_engine}}.yaml" #{{ playbook_dir }} point on the directory where site.yml exists 

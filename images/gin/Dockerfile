@@ -23,6 +23,11 @@ COPY --from=builder /app/ginbackend ./ginbackend
 COPY --from=builder /app/templates ./templates
 COPY --from=builder /app/static ./static
 
+#-m create user directory home/userx  -s interact with os using shell
+RUN useradd -ms /bin/bash userx 
+
+USER userx
+
 EXPOSE 8080
 
 CMD ["./ginbackend"]

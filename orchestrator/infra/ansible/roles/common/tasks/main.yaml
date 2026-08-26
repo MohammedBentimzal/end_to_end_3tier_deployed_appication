@@ -1,11 +1,16 @@
 #common tasks : installer docker , demarrer docker , installer python sdk , harden Os + firewalls 
+#befor installing docker and docke sdk we need to apply updates
+
+- name : apply updates 
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade : "yes" 
 
 - name: installer docker
   ansible.builtin.apt:
     name: docker.io
     state: present
-    update_cache: true
-
+    
 - name: demaarrer docker 
   ansible.builtin.service:
     name: docker

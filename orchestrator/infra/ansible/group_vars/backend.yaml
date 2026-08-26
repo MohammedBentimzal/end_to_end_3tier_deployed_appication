@@ -1,6 +1,9 @@
 # here we'll tell ansible when you wanna connect to backend group jump using bastion ip 
-#variables that should apply to the backend group machines 
-
+#Toutes les machines du groupe backend (backend_simo, backend_ali...) reçoivent ces variables.
+#Variables par host Pour une exception ponctuelle sur un seul host :
+#par exemple :inventory/host_vars/web1.lab.yml
+#http_port: 9090       # web1 écoute sur 9090, pas 8080
+#ssl_cert: /etc/pki/web1.lab.crt
 ansible_user: ubuntu
 
 ansible_ssh_common_args: >-
