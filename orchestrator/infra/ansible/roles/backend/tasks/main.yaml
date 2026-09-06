@@ -6,39 +6,39 @@
 #-e "backend_type=gin db_engine=mongo env_name=alice-dev"
 #firewalls :8000 tcp , 8080 tcp , 22 tcp , egress to all
 
-# - name : deny any incoming traffic by default 
-#   community.general.ufw :
-#     direction : incoming
-#     default : deny 
-#
-# - name : allow outgoing by default 
-#   community.general.ufw :
-#     direction : outgoing
-#     default : allow 
-#
-# - name: allow traffic comming from nginx into the 8000 or 8080 port 
-#   community.general.ufw :
-#     rule: allow
-#     port : "{{'8000' if backend_type == 'django' else '8080'}}"
-#     proto : tcp
-#     src : "{{ hostvars[groups['nginx'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
-#     direction : in
-#
-# - name: allow ssh traffic comming from the bastion
-#   community.general.ufw :
-#     rule: allow
-#     port : '22'
-#     proto : tcp
-#     src : "{{ hostvars[groups['bastion'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
-#     direction : in
-#
-# - name: enable UFW
-#   community.general.ufw:
-#     state: enabled
+- name: deny any incoming traffic by default
+  community.general.ufw:
+    direction: incoming
+    default: deny
+
+- name: allow outgoing by default
+  community.general.ufw:
+    direction: outgoing
+    default: allow
+
+- name: allow traffic comming from nginx into the 8000 or 8080 port
+  community.general.ufw:
+    rule: allow
+    port: "{{ '8000' if backend_type == 'django' else '8080' }}"
+    proto: tcp
+    src: "{{ hostvars[groups['nginx'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
+    direction: in
+
+- name: allow ssh traffic comming from the bastion
+  community.general.ufw:
+    rule: allow
+    port: '22'
+    proto: tcp
+    src: "{{ hostvars[groups['bastion'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
+    direction: in
+
+- name: enable UFW
+  community.general.ufw:
+    state: enabled
 
 #- name: load variables
 # ansible.builtin.include_vars:
- #   file: "{{ playbook_dir }}/vars/{{db_engine}}.yaml"
+ # file: "{{ playbook_dir }}/vars/{{db_engine}}.yaml"
 
 - name: Load database secret
   ansible.builtin.set_fact:
