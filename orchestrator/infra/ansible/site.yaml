@@ -1,8 +1,8 @@
 #this is where we'll run combinations 
 #will define the hosts with the roles to be used 
 
-- hosts : nginx
-  become : true
+- hosts : nginx #ansible has already the variables for the nginx host discovered by compose in the dynamic inventoy 
+  become : true #and ansible uses those vaiables to connect over ssh 
   roles :
     - common
     - nginx   #it can uses the first tf workspace nginx 

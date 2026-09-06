@@ -6,5 +6,6 @@ ansible_ssh_common_args: >-
   -o StrictHostKeyChecking=no
   -o UserKnownHostsFile=/dev/null
   -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q ubuntu@{{ hostvars[groups['bastion'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
-
-#no need for ssh agent
+#ProxyCommand modifies the SSH connection behavior by telling your local SSH client: 
+#"Do not connect directly to the target server's IP over the network. Instead, run this command first and route all network traffic through it
+#ssh -W %h:%p: Opens an SSH tunnel on the bastion host that pipes traffic directly to your destination IP (%h) and SSH port (%p)

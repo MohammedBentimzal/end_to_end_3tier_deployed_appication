@@ -6,39 +6,43 @@
 #-e "backend_type=gin db_engine=mongo env_name=alice-dev"
 #firewalls :8000 tcp , 8080 tcp , 22 tcp , egress to all
 
-- name : deny any incoming traffic by default 
-  community.general.ufw :
-    direction : incoming
-    default : deny 
+# - name : deny any incoming traffic by default 
+#   community.general.ufw :
+#     direction : incoming
+#     default : deny 
+#
+# - name : allow outgoing by default 
+#   community.general.ufw :
+#     direction : outgoing
+#     default : allow 
+#
+# - name: allow traffic comming from nginx into the 8000 or 8080 port 
+#   community.general.ufw :
+#     rule: allow
+#     port : "{{'8000' if backend_type == 'django' else '8080'}}"
+#     proto : tcp
+#     src : "{{ hostvars[groups['nginx'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
+#     direction : in
+#
+# - name: allow ssh traffic comming from the bastion
+#   community.general.ufw :
+#     rule: allow
+#     port : '22'
+#     proto : tcp
+#     src : "{{ hostvars[groups['bastion'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
+#     direction : in
+#
+# - name: enable UFW
+#   community.general.ufw:
+#     state: enabled
 
-- name : allow outgoing by default 
-  community.general.ufw :
-    direction : outgoing
-    default : allow 
+#- name: load variables
+# ansible.builtin.include_vars:
+ #   file: "{{ playbook_dir }}/vars/{{db_engine}}.yaml"
 
-- name: allow traffic comming from nginx into the 8000 or 8080 port 
-  community.general.ufw :
-    rule: allow
-    port : "{{'8000' if backend_type == 'django' else '8080'}}"
-    proto : tcp
-    src : "{{ hostvars[groups['nginx'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
-    direction : in
-
-- name: allow ssh traffic comming from the bastion
-  community.general.ufw :
-    rule: allow
-    port : '22'
-    proto : tcp
-    src : "{{ hostvars[groups['bastion'] | intersect(groups[env_name]) | first]['ansible_host'] }}"
-    direction : in
-
-- name: enable UFW
-  community.general.ufw:
-    state: enabled
-    
-- name: load variables
-  ansible.builtin.include_vars:
-    file: "{{ playbook_dir }}/vars/{{db_engine}}.yaml" #{{ playbook_dir }} point on the directory where site.yml exists 
+- name: Load database secret
+  ansible.builtin.set_fact:
+    database_secrets: "{{lookup('amazon.aws.secretsmanager_secret',db_engine,region='us-east-1') | from_json }}" #.secet is the retun value fom secret manage module
 
 - name: pull the image from docker hub
   community.docker.docker_image_pull:
@@ -81,11 +85,11 @@
                    {%- else -%}
                       {{db_engine}}
                    {%- endif -%}   
-      DB_NAME: "{{DB_NAME}}" 
-      DB_USER: "{{DB_USER}}"  
-      DB_HOST: "{{DB_HOST}}" 
-      DB_PASSWORD: "{{DB_PASSWORD}}"  
-      DB_PORT: "{{DB_PORT}}"
+      DB_NAME: "{{database_secrets.DB_NAME}}" 
+      DB_USER: "{{database_secrets.DB_USER}}"  
+      DB_HOST: "{{database_secrets.DB_HOST}}" 
+      DB_PASSWORD: "{{database_secrets.DB_PASSWORD}}"  
+      DB_PORT: "{{database_secrets.DB_PORT}}"
       
     #modules prewritten tool that cando the job for me 
       #par ametersinstructions to what to do

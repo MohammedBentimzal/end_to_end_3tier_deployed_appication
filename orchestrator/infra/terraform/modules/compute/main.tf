@@ -12,6 +12,54 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+# resource "aws_iam_role" "secret_role" {
+#   name = "${var.env_name}_secret_role"
+#
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Action = "sts:AssumeRole"
+#         Effect = "Allow"
+#         Sid    = ""
+#         Principal = {
+#           Service = "ec2.amazonaws.com"
+#         }
+#       },
+#     ]
+#   })
+# }
+#
+# resource "aws_iam_policy" "secret_pol" {
+#   name = "${var.env_name}_secret_policy"
+#
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         # Restrict to read actions required by containers
+#         Action = [
+#           "secretsmanager:GetSecretValue",
+#           "secretsmanager:DescribeSecret",
+#           "secretsmanager:ListSecrets"
+#         ]
+#         Effect   = "Allow"
+#         Resource = "*"
+#       },
+#     ]
+#   })
+# }
+#
+# resource "aws_iam_role_policy_attachment" "attach" {
+#   role       = aws_iam_role.secret_role.name
+#   policy_arn = aws_iam_policy.secret_pol.arn
+# }
+#
+# resource "aws_iam_instance_profile" "backend" {
+#   name = "${var.env_name}_instance_profile"
+#   role = aws_iam_role.secret_role.name
+# }
+
 #we need bastion instance so we can ssh the private vms 
 resource "aws_instance" "bastion_server" {
   ami           = data.aws_ami.ubuntu.id
@@ -54,6 +102,7 @@ resource "aws_instance" "app_server" {
   primary_network_interface {
     network_interface_id = var.backend_eni_id
   }
+  #iam_instance_profile = aws_iam_instance_profile.backend.name
   tags = {
     Name = "${var.backend}_${var.env_name}"
     role = "backend"
@@ -67,6 +116,7 @@ resource "aws_instance" "database_server" {
   primary_network_interface {
     network_interface_id = var.data_eni_id 
   }
+  #iam_instance_profile = aws_iam_instance_profile.backend.name
   tags = {
     Name = "${var.database}_${var.env_name}"
     role = "database"

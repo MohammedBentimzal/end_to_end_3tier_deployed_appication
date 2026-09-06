@@ -6,7 +6,7 @@ regions:
 
 keyed_groups:
   - key: tags.role 
-    separator: ""
+    separator: ""  #if I removeit -> error : skipping: no hosts matched idk why  
 
   - key: tags.env_name 
     separator: ""
@@ -14,8 +14,8 @@ keyed_groups:
 hostnames:
   - tag:Name
 
-compose: #compose creates and modifies host variables 
-        #with compose ansible can ssh with user and host 
+compose: #compose takes information discovered about each host and turns it into Ansible variables
+        #ansible ues ssh by default for linux machines and using those variables the connection succeed 
         #like ssh -i "flask_app.pem" ubuntu@44.234.40.183
         #now ansible can connect to nginx vm and bastion vm 
         #we need to tell ansible to access backend and database via bastion , ? 
