@@ -30,7 +30,7 @@ resource "aws_network_interface" "dataeni" {
 #this vpc will be segmentated into subnets and each subnet will contain a tier so we need 3 subnets 
 #between those subnets we'll configure firewalls mentionned in the project 
 
-
+#I need to asign to it a default sg (recommended from checkov )
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -162,6 +162,26 @@ resource "aws_route_table_association" "data_as" {
 # the firewall enforce the least priviliege to the network subnets 
 #firstly we'll create security group within the vpc then attach it to the ENI of the VM
 #we'll need 3 security groups 
+resource "aws_default_security_group" "vpc_sg" {
+  vpc_id = aws_vpc.main.id 
+
+  ingress {
+    protocol  = -1
+    self      = true
+    from_port = 0
+    to_port   = 0
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "vpc_sg"
+  }
+}
 
 #for the instance of the front : accept ssh http https traffic from anywhere
 resource "aws_security_group" "front_sg" {

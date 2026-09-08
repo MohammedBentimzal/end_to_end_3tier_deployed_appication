@@ -68,6 +68,7 @@ resource "aws_instance" "bastion_server" {
   # to mention security group in the instance : vpc_security_group_ids
   vpc_security_group_ids = [var.bastion_sg_id ]
   associate_public_ip_address = true
+  iam_instance_profile = aws_iam_instance_profile.instance_profile.name
   tags = {
     Name = "bastion-${var.env_name}"
     role = "bastion"
@@ -85,6 +86,7 @@ resource "aws_instance" "front_server" {
   vpc_security_group_ids = [var.nginx_sg_id ]
   # to give to the instance a pubilc ip to connect to it asoociate_public_ip_address
   associate_public_ip_address = true
+  iam_instance_profile = aws_iam_instance_profile.instance_profile.name
   tags = {
     Name = "front-${var.env_name}"
     role = "nginx"
