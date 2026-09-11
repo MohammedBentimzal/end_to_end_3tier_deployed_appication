@@ -16,6 +16,7 @@ resource "aws_network_interface" "example" {
     Name = "primary_network_interface"
   }
 }
+
 #we need to give to the database an eni so it will have a fixed private ip we mentioned in the app.py host
 resource "aws_network_interface" "dataeni" {
   subnet_id = aws_subnet.data_subnet.id 
