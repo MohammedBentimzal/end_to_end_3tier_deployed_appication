@@ -85,15 +85,12 @@ resource "aws_subnet" "private_subnet" {
     Name = "${var.backend}-subnet"
   }
 }
-#NAT Gateway depends on the internet gateway
-#the nat needs a public ip they call it elastic ip so we need to use the aws elastic ip resource aws_eip
 resource "aws_eip" "ipr" {
   domain = "vpc"
   tags = {
     Name = "ipr"
   }
 }
-#the NAT needs to be in a public subnet so it can access the internet gateway 
 resource "aws_nat_gateway" "nat_gw" {
   allocation_id = aws_eip.ipr.id 
   subnet_id = aws_subnet.public_subnet.id 
@@ -102,8 +99,6 @@ resource "aws_nat_gateway" "nat_gw" {
   }
   depends_on = [aws_internet_gateway.igw]
 }
-#route table :if the destination is outside the vpc network use the NAT to deliver it to internet gateway 
-#so the route keeps private 
 resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.main.id 
   route {
@@ -252,7 +247,6 @@ resource "aws_security_group" "backend_sg" {
   name = "${var.backend}_sg"
   description = "well accept the inbound traffic only from nginx port to the database port "
   vpc_id = aws_vpc.main.id 
-  #add connectivity from bastion over ssh so I can reach this vm with my machine 
   ingress {
     from_port = 22
     to_port = 22
@@ -271,7 +265,6 @@ resource "aws_security_group" "backend_sg" {
     protocol = "tcp" 
     security_groups = [aws_security_group.front_sg.id]
   }
-
   egress {
     from_port = 0
     to_port = 0

@@ -1,5 +1,11 @@
 #group_vars/all.yml est appliqué à tous les hôtes de l'inventaire
 #Toutes les machines (backend, database , nginx ) reçoivent ces variables
+
+
+
+
+
+
 ansible_user: ubuntu
 ansible_ssh_common_args: >-
   -o StrictHostKeyChecking=no
